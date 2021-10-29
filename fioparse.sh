@@ -4,10 +4,8 @@ usage()
 {
 cat << EOF
 usage: $0 options
-
 collects I/O related dtrace information into file "ioh.out"
 and displays the
-
 OPTIONS:
    -h              Show this message
    -v              verbose, include histograms in output
@@ -91,27 +89,19 @@ for i in $*; do
   echo "END"
 done | \
 perl -e '
-
   $ouputrows=0;
   $DEBUG=0;
   $CLAT=0;
-
   if  ( 1 == $DEBUG ) { $debug=1; }
-
   foreach $argnum (0 .. $#ARGV) {
      ${$ARGV[$argnum]}=1;
     #print "$ARGV[$argnum]=${$ARGV[$argnum]}\n";
   }
   print "continuting ... \n" if defined ($debug);
-
-
   # these are all the possible buckets for dtrace
   @buckets_dtrace=("1", "2", "4", "8", "16", "32", "64", "128", "256", "512", "1024", "2048", "4096", "8192", "16384", "32768", "65536", "131072", "262144", "524288", "1048576", "2097152", "4194304", "8388608", "16777216", "33554432");
-
   # these are all the possible buckets for fio histograms:
   @buckets_fio=("4","10","20","50","100","250","500","750","1000","2000","4000","10000","20000","50000","100000","250000","500000","750000","1000000","2000000","20000000");
-
-
   # translation of fio buckets into labels
   $buckett{4}="4us";
   $buckett{10}="10us";
@@ -134,7 +124,6 @@ perl -e '
   $buckett{1000000}="1s";
   $buckett{2000000}="2s";
   $buckett{20000000}="2s+";
-
   $bucketr{4}="us4";
   $bucketr{10}="us10";
   $bucketr{20}="us20";
@@ -156,11 +145,8 @@ perl -e '
   $bucketr{1000000}="s1";
   $bucketr{2000000}="s2";
   $bucketr{20000000}="s2g";
-
   #@output_buckets=("4","10","20","50","1000","4000","10000","20000","50000","100000","1000000","2000000","20000000");
    @output_buckets=("50","1000","4000","10000","20000","50000","100000","1000000","2000000","20000000");
-
-
 # not used now, just print out a static header
 sub hist_head {
             printf("test  users size       MB/s       ms    IOPS ");
@@ -173,11 +159,9 @@ sub hist_head {
             }
             printf("\n");
 }
-
 sub print_hist {
             printf(" ");
             $mybucket=0;
-
             # for all possible fo buckets, @buckets_fio is all known fio histogram buckets
      if ( $rplot_hist == 1  ) {
           @rbuckets_fio=("4","100","250","500","1000","2000","4000","10000","20000","50000","100000","250000","500000","1000000","2000000","20000000");
@@ -185,7 +169,7 @@ sub print_hist {
 	       $label=""; 
 	        if ($curbucket eq "4" ) {
 	          if ( $labels == 1 ) { $label="us50=";		 }
-                  printf(",%s%2d",$label, int(${$hist_type}{$curbucket}
+                  printf("%s%2d",$label, int(${$hist_type}{$curbucket}
 	                                                   + ${$hist_type}{"10"}
 	                                                   + ${$hist_type}{"20"}
 	                                                   + ${$hist_type}{"50"})||0  );
@@ -260,7 +244,6 @@ sub print_hist {
             }
      } 
 }
-
      $| = 1;
      printf("before input\n") if defined ($debug);
      while (my $line = <STDIN>) {
@@ -330,25 +313,20 @@ sub print_hist {
              $latmax =~ s/ *,.*//;
              $latstd =~ s/.*stdev=//;
              $latstd =~ s/ *//;
-
              $unit =~ s/.*\(//;
              $unit =~ s/\).*//;
              $unit =~ s/msec/1000/;
              $unit =~ s/usec/1/;
-
              foreach $var ( "latmin" , "latmax" , "laststd" ) {
                 if ( ${$var} =~ m/K/ ) { 
                   ${$var} =~ s/K//;
                   ${$var} = ${$var} *1000;
                }
             }
-
             #printf("lat type:%s; lat:%s; min:%s; max:%s; std:%s; line:%s;\n",$type,$lat,$latmin,$latmax,$line);
-
              $latmin{$type}=$latmin*$unit;
              $latmax{$type}=$latmax*$unit;
              $latstd{$type}=$latstd*$unit;
-
              $lat{$type}=$lat*$unit;
              $unit{$type}=$unit;
              next;
@@ -374,7 +352,6 @@ sub print_hist {
         #     lat (msec): 250=0.01%
         #   lat (msec): 4=6.20%, 10=15.29%, 20=42.56%, 50=30.58%, 100=2.89%
         #   lat (msec): 250=0.41%, 750=0.41%, 1000=0.83%, 2000=0.41%, >=2000=0.41%
-
         # 2 4 10 20 50 100 250 500 750 1000 2000 4000 10000 20000 50000 
         # 100000 250000 500000 750000 1000000 2000000 2000000+
         if ( $line =~ m/ lat / ) {
@@ -402,7 +379,6 @@ sub print_hist {
              }
            }
          }
-
          #     clat percentiles (usec):
          #     |  1.00th=[  179],  5.00th=[  185], 10.00th=[  191], 20.00th=[  195],
          #     | 30.00th=[  199], 40.00th=[  201], 50.00th=[  203], 60.00th=[  207],
@@ -410,7 +386,6 @@ sub print_hist {
          #     | 99.00th=[  398], 99.50th=[  474], 99.90th=[  532], 99.95th=[  796],
          #     | 99.99th=[ 1352]
          #    bw (KB/s)  : min=33040, max=38352, per=100.00%, avg=36799.16, stdev=1312.23
-
         if ( $CLAT == 1 ) {
            # printf("CLAT == 1\n");
            if (  $line =~ m/\|/ ) {
@@ -468,11 +443,9 @@ sub print_hist {
            #printf("clat mult:%s:\n",$clat_mult);
            #printf("CLAT line:%s\n",$line);
         }
-
        # important for the follwoing dtrace lines, get rid of spaces and tabs
        $line=~ s/[ ][	]/,/;
        $line =~ s/[ 	][ 	]*//g;
-
         if ( $line =~ m/dtrace_secs/ ) {
                ($type, $value)=split(",",$line);
                $dtrace_secs=$value;
@@ -501,15 +474,12 @@ sub print_hist {
                $dtrace_iop{$dtrace_io_type}=$value;
 #               printf("%s %s %s\n", $dtrace_io_type,$type,$value);
         }
-
         if ( $line =~ m/dtrace_size_start/ )    { $dtrace_size=1; }
         if ( $line =~ m/size_distribution/ )    { ($dtrace_io_type, $value)=split(",",$line);}
         if ( $line =~ m/dtrace_size_end/ )      { $dtrace_size=0; }
-
         if ( $line =~ m/dtrace_latency_start/ ) { $dtrace_latency=1; }
         if ( $line =~ m/latency_distribution/ ) { ($dtrace_io_type, $value)=split(",",$line);}
         if ( $line =~ m/dtrace_latency_end/ )   { $dtrace_latency=0; }
-
         # 
         if ( $line =~ m/\|/ ) {
               # printf("dtrace %s\n", $line);
@@ -540,13 +510,9 @@ sub print_hist {
                }
            }
        }
-
  #
  #   PRINTING OUT
  #
-
-
-
     if ( $line =~ m/END/ ) {
        if ( $rplots ==  0 ) { 
             #hist_head; 
@@ -566,11 +532,9 @@ sub print_hist {
                      printf(" %-1.1s", $type);
                      printf("%9.3f", $throughput{$type}/1048576);
                      printf("%9.3f", $lat{$type}/1000);
-
                      printf("%9.3f", $latmin{$type}/1000);
                      printf("%9.3f", $latmax{$type}/1000);
                      printf("%9.3f", $latstd{$type}/1000);
-
                      #printf("%8s", $unit{$type});
                      printf("%8s", $iops{$type});
                 } else {
@@ -578,12 +542,10 @@ sub print_hist {
                 }
 #           }
             if ( $verbose == 1 ) {
-
                    $iop=100;
                    $hist_type="lat";
                    $bucket_list= "buckets_fio";
                    print_hist;  
-
               if ( $dtrace == 1 ) {
                    printf("\n"); 
               
@@ -596,13 +558,11 @@ sub print_hist {
                    } else {
                       printf("%4sK d",int($dtrace_avgsize{$dtype}/1024));   #  type
                    } 
-
                    if ( $dtrace_secs == 0 ) { $dtrace_secs = 1; }
                    printf("%9.3f", ($dtrace_bytes{$dtype}/$dtrace_secs)/(1024*1024) );   #  throughout MB/s
                    printf("%9s", $dtrace_avglat{$dtype}/1000);   #  latency
                      printf("%27s", "");
                    printf("%8s", int($dtrace_iop{$dtype}/$dtrace_secs) );   #  iops
-
 #                  if ( $dtrace_iop{"W"} > 0 ) {
 #                     printf("%1s", "");
 #                     printf("%9.3f", ($dtrace_bytes{"W"}/$dtrace_secs)/(1024*1024) );   #  throughout MB/s
@@ -628,15 +588,12 @@ sub print_hist {
                    $max_dtrace_bucket = 0 
               } # end dtrace
             } # end verbose        
-
             if ( $percentiles == 1 ) {
               foreach $percent ( $clat95_00, $clat99_00 ,$clat99_50 ,$clat99_90 ,$clat99_95 ,$clat99_99 ) {
                  printf(",%8.3f",$percent*$clat_mult); 
               }
             } # end percentile        
-
             printf("\n"); 
-
             $users="";
             $benchmark="";
             foreach $type ( keys %iops ) {
@@ -654,7 +611,6 @@ sub print_hist {
             $dtrace_avglat="";
          
        } # end rplots = 0 
-
        if( $rplots == 1 ) {
         if ( $line =~ m/END/ && $users > 0 ) {
  	    if ( $benchmark eq "write" ) {
@@ -716,10 +672,8 @@ sub print_hist {
 	   if ( $lables == 1 )  { printf(")"); } 
            printf("\n" );
            $outputrows++;
-
         } # end line=END and users > 0
       } # end rplots = 1
-
    }
       } # end of STDIN
       if( $rplots == 1 ) {
@@ -751,6 +705,4 @@ sub print_hist {
       }
    
 printf("at end\n") if defined ($debug);
-
 ' $ARGUMENTS 
-
