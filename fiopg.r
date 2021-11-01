@@ -1,5 +1,5 @@
 
-dir <- "C:\\Temp\\"
+dir <- "./"
 poly=1
 hist=1
 ppi <- 300
@@ -44,8 +44,8 @@ testname="randread"
   file <- paste(dir,file,".png",sep="")
   cat("file=",file,"\n")
   png(filename=file, width=6*ppi, height=6*ppi, res=ppi )
-  #graphit(m, i_name=testname, i_bs="8K",i_title=paste(testtype,testname,"bs=8K"),i_hist=hist,i_poly=poly)
-  graphit(m, i_name=testname, i_bs="8K",i_title=paste("randread",testname,"bs=8K"),i_hist=hist,i_poly=poly)
+  graphit(m, i_name=testname, i_bs="8K",i_title=paste(testtype,testname,"bs=8K"),i_hist=hist,i_poly=poly)
+  #graphit(m, i_name=testname, i_bs="8K",i_title=paste("randread",testname,"bs=8K"),i_hist=hist,i_poly=poly)
   dev.off()
 
 testname="read"
@@ -62,5 +62,3 @@ testname="read"
   png(filename=file, width=6*ppi, height=6*ppi, res=ppi )
   graphit(m, i_name=testname, i_bs="1M",i_title=paste(testtype,testname,"bs=1M"),i_hist=hist,i_poly=poly)
   dev.off()
-
-
