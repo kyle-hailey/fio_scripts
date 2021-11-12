@@ -3,19 +3,12 @@
 #
 #   graphit(m)
 #
-#   will graph read tests across a varying number of users loads found in m
+#   graph dummy set of data
 #
 #   graphit takes a number of optional parameters
-#      i_poly=0 - turns off the diagraming of polygons around avg, 95% and 99% lat
-#      i_hist=0 - turns off graphing the I/O histograms
 #      i_plot_avg = 0 - turn off graphing average latency
-#      i_plot_max = 0 - turn off graphing max latency
-#      i_plot_95 = 0 - turn off graphing 95% latency
-#      i_plot_max = 0 - turn off graphing 99% latency
 #      i_plots = 2  - only plot 2 graphs (don't plot the scaling graph, middle graph)
-#      i_scalelat = "avg" - latency used to graph latency in middle graph, options are
-#                    "95", "99", "9999"
-
+#      
 graphit <- function(
                     m,i_name="undefined",i_users=0,i_bs="undefined", i_title="default title",i_hist=1,i_poly=1,
                     i_plot_avg  = 1 ,
